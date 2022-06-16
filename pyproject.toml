@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "wtforms-bootstrap5"
+version = "0.1.0"
+description = "Simple library for rendering WTForms in HTML as Bootstrap 5 form controls"
+authors = ["Fang-Pen Lin <fangpen@launchplatform.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+WTForms = "^3.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
