@@ -1,5 +1,7 @@
 import pytest
 from wtforms.form import Form
+from wtforms.fields import EmailField
+from wtforms.fields import PasswordField
 
 from wtforms_bootstrap5.renderer import Renderer
 
@@ -10,6 +12,10 @@ def renderer() -> Renderer:
 
 
 def test_renderer(renderer: Renderer):
-    form = Form()
+    class MockForm(Form):
+        email = EmailField("Email")
+        password = PasswordField("Password")
+
+    form = MockForm()
     html = renderer.render(form)
     assert html == ""
