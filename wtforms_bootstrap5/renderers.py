@@ -1,3 +1,5 @@
+import typing
+
 from markupsafe import Markup
 from wtforms import Field
 from wtforms import Form
@@ -16,6 +18,9 @@ def render_form(context: RendererContext, element: FormElement) -> Markup:
 
 
 @register(target_cls=Field)
-def render_field(render: RendererContext, element: FormElement) -> Markup:
+def render_field(context: RendererContext, element: FormElement) -> Markup:
     field: Field = element
-    return field.widget(field)
+    kwargs: typing.Dict[str, str] = {}
+    if context.field_class is not None:
+        kwargs["class"] = context.field_class
+    return field.widget(field, **kwargs)

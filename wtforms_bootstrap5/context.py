@@ -9,7 +9,12 @@ from .registry import RendererRegistry
 
 
 class RendererContext:
-    def __init__(self, registry: RendererRegistry = DEFAULT_REGISTRY):
+    def __init__(
+        self,
+        field_class: typing.Optional[str] = "form-control",
+        registry: RendererRegistry = DEFAULT_REGISTRY,
+    ):
+        self.field_class = field_class
         self.registry = registry
 
     def render(self, element: FormElement) -> Markup:
