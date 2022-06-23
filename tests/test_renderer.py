@@ -9,7 +9,7 @@ from wtforms.fields import SelectField
 from wtforms.fields import SubmitField
 from wtforms.form import Form
 
-from wtforms_bootstrap5 import renderers
+from wtforms_bootstrap5 import renderers  # noqa: F401
 from wtforms_bootstrap5.context import RendererContext
 
 
@@ -31,12 +31,16 @@ def form_cls() -> typing.Type:
     return MockForm
 
 
-def test_renderer(
+@pytest.fixture
+def form(form_cls: typing.Type) -> Form:
+    return form_cls()
+
+
+def test_render(
     renderer_context: RendererContext,
-    form_cls: typing.Type,
+    form: MockForm,
     parse_html: typing.Callable[[str], etree._ElementTree],
 ):
-    form = form_cls()
     form.password.errors = ["Bad password"]
     html = renderer_context.render(form)
     tree = parse_html(html)
@@ -46,6 +50,33 @@ def test_renderer(
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/input[@name="password"]')
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/select[@name="city"]')
     assert tree.xpath(
-        '/html/body/form/div[@class="mb-3"]/div[@class="form-check"]/input[@name="agree_terms"]'
+        '/html/body/form/div[@class="mb-3"]/div[@class="form-check"]/'
+        'input[@name="agree_terms"]'
     )
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/input[@name="submit"]')
+
+
+def test_row_args(
+    renderer_context: RendererContext,
+    form: MockForm,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    html = renderer_context.field(
+        "email", row_class="row", row_attrs={"attr": "MOCK_ATTR"}
+    ).render(form.email)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert tree.xpath(
+        '/html/body/div[@class="row" and @attr="MOCK_ATTR"]/input[@name="email"]'
+    )
+
+
+def test_row_disabled(
+    renderer_context: RendererContext,
+    form: MockForm,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    html = renderer_context.field("email", row_enabled=False).render(form.email)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert tree.xpath('/html/body/input[@name="email"]')
