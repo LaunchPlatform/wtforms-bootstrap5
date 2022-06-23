@@ -1,8 +1,10 @@
+import io
 import pathlib
 import typing
 import webbrowser
 
 import pytest
+from lxml import etree
 
 
 @pytest.fixture
@@ -38,3 +40,12 @@ def view_in_browser(tmp_path: pathlib.Path) -> typing.Callable[[str], None]:
         webbrowser.open(filepath)
 
     return _view_in_browser
+
+
+@pytest.fixture
+def parse_html() -> typing.Callable[[str], etree._ElementTree]:
+    def _parse_html(html: str) -> etree._ElementTree:
+        parser = etree.HTMLParser(recover=False)
+        return etree.parse(io.StringIO(html), parser)
+
+    return _parse_html
