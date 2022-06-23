@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import dataclasses
 import typing
 
 from markupsafe import Markup
@@ -8,14 +11,40 @@ from .registry import FormElement
 from .registry import RendererRegistry
 
 
+@dataclasses.dataclass
+class FieldOptions:
+    # class for field wrapper div
+    wrapper_class: typing.Optional[str] = "mb-3"
+    # extra attributes for field wrapper div
+    wrapper_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # Enable wrapper div or not
+    wrapper_enabled: bool = True
+    # class for field input element
+    field_class: str = "form-control"
+    # extra attributes for field input element
+    field_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # class for field label element
+    label_class: str = "form-label"
+    # extra attributes for field label element
+    label_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+
+
 class RendererContext:
     def __init__(
         self,
-        field_class: typing.Optional[str] = "form-control",
         registry: RendererRegistry = DEFAULT_REGISTRY,
+        default_field_option: FieldOptions = FieldOptions(),
     ):
-        self.field_class = field_class
+        self.default_field_option = default_field_option
         self.registry = registry
+        self.field_options: typing.Dict[str, FieldOptions] = {}
+
+    def field(self, name: str, **kwargs) -> RendererContext:
+        if name in self.field_options:
+            self.field_options[name].update(kwargs)
+        else:
+            self.field_options[name] = FieldOptions(**kwargs)
+        return self
 
     def render(self, element: FormElement) -> Markup:
         base_class_paths: typing.List[typing.Tuple] = traverse_base_classes(
@@ -30,7 +59,6 @@ class RendererContext:
                 current_metadata = current_metadata.subclasses[cls]
                 metadatas.append(current_metadata)
             for metadata in reversed(metadatas):
-                # TODO: match name first
                 for renderer in metadata.renderers:
                     return renderer(self, element)
             raise ValueError(f"Cannot find renderer for {element}")
