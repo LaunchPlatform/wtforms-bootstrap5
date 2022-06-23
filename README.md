@@ -69,4 +69,32 @@ As a result, I found myself writing HTML manually without using the library to s
 To avoid the same mistake, we want to make wtforms-bootstrap5 very easy to customize without compromise too much of its reusability.
 Here's an example how you can turn the example above into a column based form.
 
-TODO
+```python
+html = (
+    renderer_context
+    .default_field(
+        row_class="row mb-3",
+        label_class="form-label col-2",
+        field_wrapper_class="col-10",
+        field_wrapper_enabled=True,
+    )
+    .field(
+        "agree_terms",
+        wrapper_class="offset-2",
+        wrapper_enabled=True,
+        field_wrapper_enabled=False,
+    )
+    .field(
+        "submit",
+        field_wrapper_class="offset-2",
+        field_wrapper_enabled=True,
+    )
+).render(form)
+```
+
+And this is how it looks like
+
+<p align="center">
+  <img src="assets/column-style-example.png?raw=true" alt="Form rendered in Bootstrap 5 favor" />
+</p>
+
