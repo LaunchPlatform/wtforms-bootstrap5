@@ -20,25 +20,41 @@ class FieldOptions:
     # Enable wrapper div or not
     wrapper_enabled: bool = True
     # class for field input element
-    field_class: str = "form-control"
+    field_class: typing.Optional[str] = "form-control"
     # extra attributes for field input element
     field_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
     # invalid class for validation
-    field_invalid_class: str = "is-invalid"
+    field_invalid_class: typing.Optional[str] = "is-invalid"
     # class for submit field input element
-    submit_field_class: str = "btn btn-primary"
+    submit_field_class: typing.Optional[str] = "btn btn-primary"
+    # class for checkbox input element
+    checkbox_field_class: typing.Optional[str] = "form-check-input"
+    # class for checkbox label element
+    checkbox_label_class: typing.Optional[str] = "form-check-label"
+    # class for checkbox wrapper class div
+    checkbox_wrapper_class: typing.Optional[str] = "form-check"
+    # extra attributes for checkbox wrapper class div
+    checkbox_wrapper_attrs: typing.Dict[str, str] = dataclasses.field(
+        default_factory=dict
+    )
+    # enable checkbox wrapper
+    checkbox_wrapper_enabled: bool = True
     # class for field label element
-    label_class: str = "form-label"
+    label_class: typing.Optional[str] = "form-label"
     # extra attributes for field label element
     label_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # render label first before input element
+    label_first: bool = True
+    # enable label
+    label_enabled: bool = True
     # class for error message div
-    error_class: str = "invalid-feedback"
+    error_class: typing.Optional[str] = "invalid-feedback"
     # extra attributes error message div
     error_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
     # Separator of error messages
     error_separator: str = " "
     # class for help message div
-    help_class: str = "form-text"
+    help_class: typing.Optional[str] = "form-text"
     # extra attributes help message div
     help_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
     # enable help message
