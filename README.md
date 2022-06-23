@@ -59,3 +59,14 @@ And it will look like this
 </p>
 
 By default, a sensible simple layout style will be used.
+
+## Customize the form
+
+There are many similar open source libraries out there, but most of them are very hard to customize.
+Once you adopt it, then you can only render your form in a specific style.
+As a result, I found myself writing HTML manually without using the library to save time.
+
+To avoid the same mistake, we want to make wtforms-bootstrap5 very easy to customize without compromise too much of its reusability.
+Here's an example how you can turn the example above into a column based form.
+
+TODO
