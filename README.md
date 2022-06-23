@@ -98,3 +98,25 @@ And this is how it looks like
   <img src="assets/column-style-example.png?raw=true" alt="Form rendered in Bootstrap 5 favor" />
 </p>
 
+As you can see in the example, we use `default_field` method for overwriting the options of all fields by default.
+We also use `field` method for overwriting the options for a specific field.
+The `field` method takes multiple input name arguments, so that you can overwrite options for multiple fields at once like this
+
+```python
+html = (context
+    .field("email", "password", label_class="my-custom-class", ...)
+)
+```
+
+Please notice that, **the order of `default_field` and `field` method calls matter**.
+When `field` is called, the current default field options will be used as the default values.
+So if you make the calls in order like this
+
+```python
+html = (context
+    .field("email", row_class="row")
+    .default_field(label_class="my-custom-class")
+)
+```
+
+The `label_class` for `email` field here will be `form-label` instead of `my-custom-class` since when it's called, the original default value was still `form-label`.
