@@ -58,7 +58,17 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
                 f"<label{html_params(**label_kwargs)}>{escape(field.label)}</label>"
             ),
         )
+
     content.append(field.widget(field, **field_kwargs))
+
+    if field.description:
+        help_kwargs = {}
+        if field_options.help_class is not None:
+            help_kwargs["class"] = field_options.help_class
+        help_kwargs.update(field_options.help_attrs)
+        help_message = escape(field.description)
+        content.append(f"<div{html_params(**help_kwargs)}>{help_message}</div>")
+
     if field.errors:
         error_kwargs = {}
         if field_options.error_class is not None:

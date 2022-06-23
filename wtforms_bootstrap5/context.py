@@ -31,12 +31,18 @@ class FieldOptions:
     label_class: str = "form-label"
     # extra attributes for field label element
     label_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
-    # Class for error message div
+    # class for error message div
     error_class: str = "invalid-feedback"
     # extra attributes error message div
     error_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
     # Separator of error messages
     error_separator: str = " "
+    # class for help message div
+    help_class: str = "form-text"
+    # extra attributes help message div
+    help_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # enable help message
+    help_enabled: bool = True
 
 
 class RendererContext:
