@@ -11,26 +11,44 @@ from .registry import FormElement
 from .registry import RendererRegistry
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class FieldOptions:
-    # class for field wrapper div
+    # class for row div
+    row_class: typing.Optional[str] = "mb-3"
+    # extra attributes for row div
+    row_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # Enable wrapper row or not
+    row_enabled: bool = True
+
+    # class for the inner wrapper div (inside row div)
     wrapper_class: typing.Optional[str] = "mb-3"
-    # extra attributes for field wrapper div
+    # extra attributes for the inner wrapper div (inside row div)
     wrapper_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
-    # Enable wrapper div or not
-    wrapper_enabled: bool = True
+    # enable inner wrapper div (inside row div)
+    wrapper_enabled: bool = False
+
+    # class for field input wrapper div
+    field_wrapper_class: typing.Optional[str] = None
+    # extra attributes for field input wrapper div
+    field_wrapper_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # enable field input wrapper div or not
+    field_wrapper_enabled: bool = False
+
     # class for field input element
     field_class: typing.Optional[str] = "form-control"
     # extra attributes for field input element
     field_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
     # invalid class for validation
     field_invalid_class: typing.Optional[str] = "is-invalid"
+
     # class for submit field input element
     submit_field_class: typing.Optional[str] = "btn btn-primary"
+
     # class for checkbox input element
     checkbox_field_class: typing.Optional[str] = "form-check-input"
     # class for checkbox label element
     checkbox_label_class: typing.Optional[str] = "form-check-label"
+
     # class for checkbox wrapper class div
     checkbox_wrapper_class: typing.Optional[str] = "form-check"
     # extra attributes for checkbox wrapper class div
@@ -39,20 +57,27 @@ class FieldOptions:
     )
     # enable checkbox wrapper
     checkbox_wrapper_enabled: bool = True
+
+    # class for select input element
+    select_field_class: typing.Optional[str] = "form-select"
+
     # class for field label element
     label_class: typing.Optional[str] = "form-label"
     # extra attributes for field label element
     label_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+
     # render label first before input element
     label_first: bool = True
     # enable label
     label_enabled: bool = True
+
     # class for error message div
     error_class: typing.Optional[str] = "invalid-feedback"
     # extra attributes error message div
     error_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
     # Separator of error messages
     error_separator: str = " "
+
     # class for help message div
     help_class: typing.Optional[str] = "form-text"
     # extra attributes help message div
@@ -71,11 +96,18 @@ class RendererContext:
         self.registry = registry
         self.field_options: typing.Dict[str, FieldOptions] = {}
 
-    def field(self, name: str, **kwargs) -> RendererContext:
-        if name in self.field_options:
-            self.field_options[name].update(kwargs)
-        else:
-            self.field_options[name] = FieldOptions(**kwargs)
+    def field(self, *names: str, **kwargs: str) -> RendererContext:
+        for name in names:
+            old_options = dataclasses.asdict(
+                self.field_options.get(name, self.default_field_option)
+            )
+            self.field_options[name] = FieldOptions(**(old_options | kwargs))
+            return self
+
+    def default_field(self, **kwargs: str) -> RendererContext:
+        self.default_field_option = FieldOptions(
+            **(dataclasses.asdict(self.default_field_option) | kwargs)
+        )
         return self
 
     def render(self, element: FormElement) -> Markup:

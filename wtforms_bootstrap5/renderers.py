@@ -5,6 +5,8 @@ from markupsafe import Markup
 from wtforms import BooleanField
 from wtforms import Field
 from wtforms import Form
+from wtforms import SelectField
+from wtforms import SelectMultipleField
 from wtforms import SubmitField
 from wtforms.widgets import html_params as raw_html_params
 
@@ -24,6 +26,31 @@ def html_params(**kwargs) -> str:
     return " " + raw_html_params(**kwargs)
 
 
+def wrap_with(
+    html: str,
+    enabled: bool,
+    class_name: typing.Optional[str],
+    attrs: typing.Dict[str, str],
+    tag: str = "div",
+) -> Markup:
+    """Optionally wrap given html with a div tag with given class and attributes
+
+    :param html: given html to wrap
+    :param enabled: wrapper enabled or not
+    :param class_name: class value of wrapper
+    :param attrs: attributes of wrapper
+    :param tag: type of tag, `div` will be used by default
+    :return: wrapped html
+    """
+    if not enabled:
+        return Markup(html)
+    kwargs = {}
+    if class_name is not None:
+        kwargs["class"] = class_name
+    kwargs.update(attrs)
+    return Markup(f"<div{html_params(**kwargs)}>{html}</div>")
+
+
 @register(target_cls=Form)
 def render_form(context: RendererContext, element: FormElement) -> Markup:
     form: Form = element
@@ -36,6 +63,7 @@ def render_form(context: RendererContext, element: FormElement) -> Markup:
 def render_field(context: RendererContext, element: FormElement) -> Markup:
     field: Field = element
     is_checkbox = isinstance(field, BooleanField)
+    is_select = isinstance(field, (SelectField, SelectMultipleField))
 
     field_kwargs: typing.Dict[str, str] = {}
     field_options: FieldOptions = _field_option(context, name=field.name)
@@ -43,6 +71,8 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
     if field_options.field_class is not None:
         if is_checkbox:
             field_classes.append(field_options.checkbox_field_class)
+        elif is_select:
+            field_classes.append(field_options.select_field_class)
         else:
             field_classes.append(field_options.field_class)
     if field.errors:
@@ -51,7 +81,15 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
         field_kwargs["class"] = " ".join(field_classes)
     field_kwargs.update(field_options.field_attrs)
 
-    content = [field.widget(field, **field_kwargs)]
+    field_html = field.widget(field, **field_kwargs)
+    field_html = wrap_with(
+        field_html,
+        enabled=field_options.field_wrapper_enabled,
+        class_name=field_options.field_wrapper_class,
+        attrs=field_options.field_wrapper_attrs,
+    )
+
+    content = [field_html]
 
     if field.label is not None and field_options.label_enabled:
         label_kwargs = {"for": field.name}
@@ -68,40 +106,46 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
             content.append(label_html)
 
     if field.description:
-        help_kwargs = {}
-        if field_options.help_class is not None:
-            help_kwargs["class"] = field_options.help_class
-        help_kwargs.update(field_options.help_attrs)
         help_message = escape(field.description)
-        content.append(f"<div{html_params(**help_kwargs)}>{help_message}</div>")
-
-    if field.errors:
-        error_kwargs = {}
-        if field_options.error_class is not None:
-            error_kwargs["class"] = field_options.error_class
-        error_kwargs.update(field_options.error_attrs)
-        error_message = escape(field_options.error_separator.join(field.errors))
-        content.append(f"<div{html_params(**error_kwargs)}>{error_message}</div>")
-
-    content_str = "".join(content)
-
-    if is_checkbox and field_options.checkbox_wrapper_enabled:
-        checkbox_wrapper_kwargs = {}
-        if field_options.checkbox_wrapper_class is not None:
-            checkbox_wrapper_kwargs["class"] = field_options.checkbox_wrapper_class
-            checkbox_wrapper_kwargs.update(field_options.checkbox_wrapper_attrs)
-        content_str = (
-            f"<div{html_params(**checkbox_wrapper_kwargs)}>{content_str}</div>"
+        content.append(
+            wrap_with(
+                help_message,
+                enabled=True,
+                class_name=field_options.help_class,
+                attrs=field_options.help_attrs,
+            )
         )
 
-    if not field_options.wrapper_enabled:
-        return Markup(content_str)
+    if field.errors:
+        error_message = escape(field_options.error_separator.join(field.errors))
+        content.append(
+            wrap_with(
+                error_message,
+                enabled=True,
+                class_name=field_options.error_class,
+                attrs=field_options.error_attrs,
+            )
+        )
 
-    wrapper_kwargs = {}
-    if field_options.wrapper_class is not None:
-        wrapper_kwargs["class"] = field_options.wrapper_class
-    wrapper_kwargs.update(field_options.wrapper_attrs)
-    return Markup(f"<div{html_params(**wrapper_kwargs)}>{content_str}</div>")
+    content_html = "".join(content)
+    content_html = wrap_with(
+        content_html,
+        enabled=is_checkbox and field_options.checkbox_wrapper_enabled,
+        class_name=field_options.checkbox_wrapper_class,
+        attrs=field_options.checkbox_wrapper_attrs,
+    )
+    content_html = wrap_with(
+        content_html,
+        enabled=field_options.wrapper_enabled,
+        class_name=field_options.wrapper_class,
+        attrs=field_options.wrapper_attrs,
+    )
+    return wrap_with(
+        content_html,
+        enabled=field_options.row_enabled,
+        class_name=field_options.row_class,
+        attrs=field_options.row_attrs,
+    )
 
 
 @register(target_cls=SubmitField)
@@ -114,14 +158,25 @@ def render_submit(context: RendererContext, element: FormElement) -> Markup:
         field_kwargs["class"] = field_options.submit_field_class
     field_kwargs.update(field_options.field_attrs)
 
-    content = []
-    content.append(field.widget(field, **field_kwargs))
-    content_str = "".join(content)
-    if not field_options.wrapper_enabled:
-        return Markup(content_str)
+    field_html = field.widget(field, **field_kwargs)
+    field_html = wrap_with(
+        field_html,
+        enabled=field_options.field_wrapper_enabled,
+        class_name=field_options.field_wrapper_class,
+        attrs=field_options.field_wrapper_attrs,
+    )
 
-    wrapper_kwargs = {}
-    if field_options.wrapper_class is not None:
-        wrapper_kwargs["class"] = field_options.wrapper_class
-    wrapper_kwargs.update(field_options.wrapper_attrs)
-    return Markup(f"<div{html_params(**wrapper_kwargs)}>{content_str}</div>")
+    content = [field_html]
+    content_html = "".join(content)
+    content_html = wrap_with(
+        content_html,
+        enabled=field_options.wrapper_enabled,
+        class_name=field_options.wrapper_class,
+        attrs=field_options.wrapper_attrs,
+    )
+    return wrap_with(
+        content_html,
+        enabled=field_options.row_enabled,
+        class_name=field_options.row_class,
+        attrs=field_options.row_attrs,
+    )
