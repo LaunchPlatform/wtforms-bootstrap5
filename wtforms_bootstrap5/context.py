@@ -23,6 +23,8 @@ class FieldOptions:
     field_class: str = "form-control"
     # extra attributes for field input element
     field_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # class for submit field input element
+    submit_field_class: str = "btn btn-primary"
     # class for field label element
     label_class: str = "form-label"
     # extra attributes for field label element

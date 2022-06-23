@@ -3,6 +3,7 @@ import typing
 from markupsafe import Markup
 from wtforms import Field
 from wtforms import Form
+from wtforms import SubmitField
 from wtforms.widgets import html_params as raw_html_params
 
 from .context import FieldOptions
@@ -52,6 +53,29 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
     content.append(field.widget(field, **field_kwargs))
     # TODO: display help
     # TODO: handle error
+    content_str = "".join(content)
+    if not field_options.wrapper_enabled:
+        return Markup(content_str)
+
+    wrapper_kwargs = {}
+    if field_options.wrapper_class is not None:
+        wrapper_kwargs["class"] = field_options.wrapper_class
+    wrapper_kwargs.update(field_options.wrapper_attrs)
+    return Markup(f"<div{html_params(**wrapper_kwargs)}>{content_str}</div>")
+
+
+@register(target_cls=SubmitField)
+def render_submit(context: RendererContext, element: FormElement) -> Markup:
+    field: SubmitField = element
+
+    field_kwargs: typing.Dict[str, str] = {}
+    field_options: FieldOptions = _field_option(context, name=field.name)
+    if field_options.submit_field_class is not None:
+        field_kwargs["class"] = field_options.submit_field_class
+    field_kwargs.update(field_options.field_attrs)
+
+    content = []
+    content.append(field.widget(field, **field_kwargs))
     content_str = "".join(content)
     if not field_options.wrapper_enabled:
         return Markup(content_str)
