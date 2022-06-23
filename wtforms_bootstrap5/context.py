@@ -23,12 +23,20 @@ class FieldOptions:
     field_class: str = "form-control"
     # extra attributes for field input element
     field_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # invalid class for validation
+    field_invalid_class: str = "is-invalid"
     # class for submit field input element
     submit_field_class: str = "btn btn-primary"
     # class for field label element
     label_class: str = "form-label"
     # extra attributes for field label element
     label_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # Class for error message div
+    error_class: str = "invalid-feedback"
+    # extra attributes error message div
+    error_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # Separator of error messages
+    error_separator: str = " "
 
 
 class RendererContext:

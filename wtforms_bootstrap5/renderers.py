@@ -1,5 +1,6 @@
 import typing
 
+from markupsafe import escape
 from markupsafe import Markup
 from wtforms import Field
 from wtforms import Form
@@ -36,8 +37,13 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
 
     field_kwargs: typing.Dict[str, str] = {}
     field_options: FieldOptions = _field_option(context, name=field.name)
+    field_classes = []
     if field_options.field_class is not None:
-        field_kwargs["class"] = field_options.field_class
+        field_classes.append(field_options.field_class)
+    if field.errors:
+        field_classes.append(field_options.field_invalid_class)
+    if field_classes:
+        field_kwargs["class"] = " ".join(field_classes)
     field_kwargs.update(field_options.field_attrs)
 
     content = []
@@ -48,9 +54,19 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
         label_kwargs.update(field_options.label_attrs)
         content.insert(
             0,
-            Markup(f"<label{html_params(**label_kwargs)}>{field.label}</label>"),
+            Markup(
+                f"<label{html_params(**label_kwargs)}>{escape(field.label)}</label>"
+            ),
         )
     content.append(field.widget(field, **field_kwargs))
+    if field.errors:
+        error_kwargs = {}
+        if field_options.error_class is not None:
+            error_kwargs["class"] = field_options.error_class
+        error_kwargs.update(field_options.error_attrs)
+        error_message = escape(field_options.error_separator.join(field.errors))
+        content.append(f"<div{html_params(**error_kwargs)}>{error_message}</div>")
+
     # TODO: display help
     # TODO: handle error
     content_str = "".join(content)
