@@ -23,4 +23,16 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
     kwargs: typing.Dict[str, str] = {}
     if context.field_class is not None:
         kwargs["class"] = context.field_class
-    return field.widget(field, **kwargs)
+    content = []
+    if field.label is not None:
+        content.insert(
+            0,
+            Markup(
+                f'<label for="{field.name}" class="form-label">{field.label}</label>'
+            ),
+        )
+    content.append(field.widget(field, **kwargs))
+    # TODO: display help
+    # TODO: handle error
+    content_str = "".join(content)
+    return Markup(f'<div class="mb-3">{content_str}</div>')

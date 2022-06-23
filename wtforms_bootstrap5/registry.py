@@ -34,7 +34,6 @@ class RendererRegistry:
         self,
         renderer: FormElementRenderer,
         target_cls: typing.Type,
-        name: typing.Optional[str] = None,
     ):
         base_class_paths: typing.List[typing.Tuple] = traverse_base_classes(
             cls=target_cls
@@ -56,11 +55,10 @@ DEFAULT_REGISTRY = RendererRegistry()
 
 def register(
     target_cls: typing.Type,
-    name: typing.Optional[str] = None,
     registry: RendererRegistry = DEFAULT_REGISTRY,
 ):
     def decorator(renderer: FormElementRenderer) -> FormElementRenderer:
-        registry.add(renderer=renderer, target_cls=target_cls, name=name)
+        registry.add(renderer=renderer, target_cls=target_cls)
         return renderer
 
     return decorator
