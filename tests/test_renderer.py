@@ -56,7 +56,27 @@ def test_render(
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/input[@name="submit"]')
 
 
-def test_row_args(
+def test_default_field_options(
+    renderer_context: RendererContext,
+    form: MockForm,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    form.password.errors = ["Bad password"]
+    html = renderer_context.default_field(row_class="row").render(form)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert tree.xpath("/html/body/form")
+    assert tree.xpath('/html/body/form/div[@class="row"]/input[@name="email"]')
+    assert tree.xpath('/html/body/form/div[@class="row"]/input[@name="password"]')
+    assert tree.xpath('/html/body/form/div[@class="row"]/select[@name="city"]')
+    assert tree.xpath(
+        '/html/body/form/div[@class="row"]/div[@class="form-check"]/'
+        'input[@name="agree_terms"]'
+    )
+    assert tree.xpath('/html/body/form/div[@class="row"]/input[@name="submit"]')
+
+
+def test_row_options(
     renderer_context: RendererContext,
     form: MockForm,
     parse_html: typing.Callable[[str], etree._ElementTree],
@@ -80,3 +100,21 @@ def test_row_disabled(
     tree = parse_html(html)
     # Notice: lxml parser will add html and body automatically in the tree
     assert tree.xpath('/html/body/input[@name="email"]')
+
+
+def test_wrapper_options(
+    renderer_context: RendererContext,
+    form: MockForm,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    html = renderer_context.field(
+        "submit",
+        wrapper_class="offset-3",
+        wrapper_attrs={"attr": "MOCK_ATTR"},
+        wrapper_enabled=True,
+    ).render(form.submit)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert tree.xpath(
+        '/html/body/div[@class="mb-3"]/div[@class="offset-3" and @attr="MOCK_ATTR"]/input[@name="submit"]'
+    )
