@@ -27,6 +27,25 @@ class MyForm(Form):
     agree_terms = BooleanField("I agrees to terms and service")
     submit = SubmitField()
 
+```
 
+Then you can use `RenderContext` for rendering your form like this
+
+```python
+from wtforms_bootstrap5 import RendererContext
+
+form = MyForm()
+context = RendererContext()
+html = context.render(form)
+```
+
+The form will be rendered as HTML like
+
+```html
+<form><div class="mb-3"><label class="form-label" for="email">Email</label><input class="form-control" id="email" name="email" type="email" value=""></div>
+<div class="mb-3"><label class="form-label" for="password">Password</label><input class="form-control" id="password" name="password" type="password" value=""><div class="form-text">Your super secret password</div></div>
+<div class="mb-3"><label class="form-label" for="city">City</label><select class="form-select" id="city" name="city"><option value="Los Angle">Los Angle</option><option value="San Francisco">San Francisco</option><option value="New York">New York</option></select></div>
+<div class="mb-3"><div class="form-check"><label class="form-check-label" for="agree_terms">I agrees to terms and service</label><input class="form-check-input" id="agree_terms" name="agree_terms" type="checkbox" value="y"></div></div>
+<div class="mb-3"><input class="btn btn-primary" id="submit" name="submit" type="submit" value="Submit"></div></form>
 ```
 
