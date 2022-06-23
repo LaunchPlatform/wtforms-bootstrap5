@@ -48,7 +48,7 @@ def wrap_with(
     if class_name is not None:
         kwargs["class"] = class_name
     kwargs.update(attrs)
-    return Markup(f"<div{html_params(**kwargs)}>{html}</div>")
+    return Markup(f"<{tag}{html_params(**kwargs)}>{html}</div>")
 
 
 @register(target_cls=Form)
@@ -81,7 +81,30 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
         field_kwargs["class"] = " ".join(field_classes)
     field_kwargs.update(field_options.field_attrs)
 
-    field_html = field.widget(field, **field_kwargs)
+    field_content = [field.widget(field, **field_kwargs)]
+    if field.description:
+        help_message = escape(field.description)
+        field_content.append(
+            wrap_with(
+                help_message,
+                enabled=True,
+                class_name=field_options.help_class,
+                attrs=field_options.help_attrs,
+            )
+        )
+
+    if field.errors:
+        error_message = escape(field_options.error_separator.join(field.errors))
+        field_content.append(
+            wrap_with(
+                error_message,
+                enabled=True,
+                class_name=field_options.error_class,
+                attrs=field_options.error_attrs,
+            )
+        )
+
+    field_html = "".join(field_content)
     field_html = wrap_with(
         field_html,
         enabled=field_options.field_wrapper_enabled,
@@ -104,28 +127,6 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
             content.insert(0, label_html)
         else:
             content.append(label_html)
-
-    if field.description:
-        help_message = escape(field.description)
-        content.append(
-            wrap_with(
-                help_message,
-                enabled=True,
-                class_name=field_options.help_class,
-                attrs=field_options.help_attrs,
-            )
-        )
-
-    if field.errors:
-        error_message = escape(field_options.error_separator.join(field.errors))
-        content.append(
-            wrap_with(
-                error_message,
-                enabled=True,
-                class_name=field_options.error_class,
-                attrs=field_options.error_attrs,
-            )
-        )
 
     content_html = "".join(content)
     content_html = wrap_with(
