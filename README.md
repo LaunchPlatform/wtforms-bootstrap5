@@ -120,3 +120,22 @@ html = (context
 ```
 
 The `label_class` for `email` field here will be `form-label` instead of `my-custom-class` since when it's called, the original default value was still `form-label`.
+
+### Field HTML structure
+
+In general, the field HTML structure can be controlled by the option values and it looks like this
+
+```html
+<!-- enabled by .row_enabled, default: true -->
+<div class=".row_class" {.row_attrs}>
+  <!-- enabled by .wrapper_enabled, default: false -->
+  <div class=".wrapper_class" {.wrapper_attrs}>
+    <label class=".label_class" for="email" {.label_attrs}>Email</label>
+    <div class=".field_wrapper">
+      <input class="form-control is-invalid" id="email" name="email" type="email" value="">
+      <div class="form-text">Your super secret password</div>
+      <div class="invalid-feedback">Bad password</div>
+    </div>
+  </div>
+</div>
+```
