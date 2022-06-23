@@ -116,5 +116,6 @@ def test_wrapper_options(
     tree = parse_html(html)
     # Notice: lxml parser will add html and body automatically in the tree
     assert tree.xpath(
-        '/html/body/div[@class="mb-3"]/div[@class="offset-3" and @attr="MOCK_ATTR"]/input[@name="submit"]'
+        '/html/body/div[@class="mb-3"]/div[@class="offset-3" and @attr="MOCK_ATTR"]/'
+        'input[@name="submit"]'
     )
