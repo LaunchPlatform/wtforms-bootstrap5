@@ -9,7 +9,6 @@ from wtforms.fields import SelectField
 from wtforms.fields import SubmitField
 from wtforms.form import Form
 
-from wtforms_bootstrap5 import renderers  # noqa: F401
 from wtforms_bootstrap5.context import RendererContext
 
 
