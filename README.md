@@ -1,6 +1,8 @@
 # wtforms-bootstrap5
 Simple library for rendering WTForms in HTML as Bootstrap 5 form controls
 
+**Notice: this project is still in very early stage, the API may change a lots rapidly**
+
 ## Why?
 
 Everytime I build a website with [WTForms](https://wtforms.readthedocs.io), I spend way too much time in writing HTML and [Jinja template](https://jinja.palletsprojects.com/) for rendering a form as [Bootstrap 5 form controls](https://getbootstrap.com/docs/5.2/forms/overview/).
