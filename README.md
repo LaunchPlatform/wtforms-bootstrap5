@@ -66,7 +66,7 @@ There are many similar open source libraries out there, but most of them are ver
 Once you adopt it, then you can only render your form in a specific style.
 As a result, I found myself writing HTML manually without using the library to save time.
 
-To avoid the same mistake, we want to make wtforms-bootstrap5 very easy to customize without compromise too much of its reusability.
+To avoid the same mistake, we want to make wtforms-bootstrap5 very easy to customize without compromising too much of its reusability.
 Here's an example how you can turn the example above into a column based form.
 
 ```python
