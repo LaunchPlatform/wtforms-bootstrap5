@@ -3,12 +3,29 @@ Simple library for rendering WTForms in HTML as Bootstrap 5 form controls
 
 **Notice: this project is still in very early stage, the API may change a lots rapidly**
 
+## Features
+
+- **MIT licensed** - it doesn't infect your code
+- **Light weight** - not much code and little dependencies
+- **Latest Bootstrap 5** - generates forms in latest Bootstrap 5 style 
+- **High customizable** - you can generate different kind of Bootstrap 5 form controls and layouts
+- **Template engine friendly** - chained method calls making it easy to integrate with template engine
+- **Covered with automatic tests** - yep, we have test cases
+
 ## Why?
 
 Everytime I build a website with [WTForms](https://wtforms.readthedocs.io), I spend way too much time in writing HTML and [Jinja template](https://jinja.palletsprojects.com/) for rendering a form as [Bootstrap 5 form controls](https://getbootstrap.com/docs/5.2/forms/overview/).
 Work smart is an important value we have here at [Launch Platform](https://launchplatform.com), so I wonder why not make a library for making rendering Bootstrap 5 style WTForms controls easily?
 So here you go, wtforms-bootstrap5 is created, open sourced under MIT license.
 It's a simple Python library for rendering WTForms in Bootstrap 5 favor.
+
+## Install
+
+To install the formatter, simply run
+
+```bash
+pip install wtforms-bootstrap5
+```
 
 ## Example
 
