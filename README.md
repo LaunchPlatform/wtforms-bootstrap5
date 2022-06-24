@@ -194,3 +194,8 @@ For example, after passing `form` and `render_context` object, you can write thi
     ).render(form)
 }}
 ```
+
+## Feedbacks
+
+Feedbacks, bugs reporting or feature requests are welcome 🙌, just please open an issue.
+No guarantee we have time to deal with them, but will see what we can do.
