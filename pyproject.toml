@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Simple library for rendering WTForms in HTML as Bootstrap 5 form controls"
 authors = ["Fang-Pen Lin <fangpen@launchplatform.com>"]
 license = "MIT"
+repository = "https://github.com/LaunchPlatform/wtforms-bootstrap5"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
