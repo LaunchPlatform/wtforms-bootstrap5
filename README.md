@@ -133,12 +133,12 @@ In general, the field HTML structure can be controlled by the option values and 
     <!-- enabled by .label_enabled, default: true -->
     <label class=".label_class" for="email" {.label_attrs}>Email</label>
     <!-- enabled by .field_wrapper_enabled, default: false -->
-    <div class=".field_wrapper">
-      <input class=".field_class" id="email" name="email" type="email" value="">
+    <div class=".field_wrapper" {.field_wrapper_attrs}>
+      <input class=".field_class" id="email" name="email" type="email" value="" {.field_attrs}>
       <!-- enabled by .help_enabled, default: true -->
-      <div class=".help_class">Your super secret password</div>
+      <div class=".help_class" {.helper_attrs}>Your super secret password</div>
       <!-- enabled by .error_enabled, default: true -->
-      <div class=".erro_class">Bad password</div>
+      <div class=".error_class" {.error_attrs}>Bad password</div>
     </div>
   </div>
 </div>
