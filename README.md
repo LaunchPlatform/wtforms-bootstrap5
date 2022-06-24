@@ -160,3 +160,37 @@ In general, the field HTML structure can be controlled by the option values and 
   </div>
 </div>
 ```
+
+## Integrate with template engine
+
+We want to make it as easy as possible to integrate with template engine such as [Jinja](https://jinja.palletsprojects.com/).
+That's why we use chained method calls for customizing the form.
+You should be able to pass the `form` and `RenderContext` objects and write all your form customization from the template.
+This way, you don't get your view relative code pollute your controller code.
+For example, after passing `form` and `render_context` object, you can write this in Jinja:
+
+```html
+<h1>New user</h1>
+
+{{
+    renderer_context
+        .default_field(
+            row_class="row mb-3",
+            label_class="form-label col-2",
+            field_wrapper_class="col-10",
+            field_wrapper_enabled=True,
+        )
+        .field(
+            "agree_terms",
+            wrapper_class="offset-2",
+            wrapper_enabled=True,
+            field_wrapper_enabled=False,
+        )
+        .field(
+            "submit",
+            field_wrapper_class="offset-2",
+            field_wrapper_enabled=True,
+        )
+    ).render(form)
+}}
+```
