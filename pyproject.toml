@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wtforms-bootstrap5"
-version = "0.1.1"
+version = "0.1.2"
 description = "Simple library for rendering WTForms in HTML as Bootstrap 5 form controls"
 authors = ["Fang-Pen Lin <fangpen@launchplatform.com>"]
 license = "MIT"
