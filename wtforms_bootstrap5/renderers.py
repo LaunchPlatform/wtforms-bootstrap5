@@ -48,15 +48,29 @@ def wrap_with(
     if class_name is not None:
         kwargs["class"] = class_name
     kwargs.update(attrs)
-    return Markup(f"<{tag}{html_params(**kwargs)}>{html}</div>")
+    return Markup(f"<{tag}{html_params(**kwargs)}>{html}</{tag}>")
 
 
 @register(target_cls=Form)
 def render_form(context: RendererContext, element: FormElement) -> Markup:
     form: Form = element
+    form_options = context.form_options
     fields = [context.render(field) for field in form._fields.values()]
-    # TODO: add form action, method and other stuff
-    return Markup("<form>" + "\n".join(fields) + "</form>")
+    content = "\n".join(fields)
+    base_attrs = {}
+    if form_options.action is not None:
+        base_attrs["action"] = form_options.action
+    if form_options.method is not None:
+        base_attrs["method"] = form_options.method
+    if form_options.enctype is not None:
+        base_attrs["enctype"] = form_options.enctype
+    return wrap_with(
+        content,
+        enabled=form_options.form_enabled,
+        class_name=form_options.form_class,
+        attrs=base_attrs | form_options.form_attrs,
+        tag="form",
+    )
 
 
 @register(target_cls=Field)

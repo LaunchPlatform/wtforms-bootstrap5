@@ -118,3 +118,37 @@ def test_wrapper_options(
         '/html/body/div[@class="mb-3"]/div[@class="offset-3" and @attr="MOCK_ATTR"]/'
         'input[@name="submit"]'
     )
+
+
+def test_form_options(
+    renderer_context: RendererContext,
+    form: MockForm,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    html = renderer_context.form(
+        method="MOCK_METHOD",
+        action="MOCK_ACTION",
+        enctype="MOCK_ENCTYPE",
+        form_class="MOCK_CLASS",
+        form_attrs=dict(mock_attr="MOCK_VALUE"),
+    ).render(form)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    form = tree.xpath("/html/body/form")[0]
+    assert form.attrib["method"] == "MOCK_METHOD"
+    assert form.attrib["action"] == "MOCK_ACTION"
+    assert form.attrib["enctype"] == "MOCK_ENCTYPE"
+    assert form.attrib["class"] == "MOCK_CLASS"
+    assert form.attrib["mock_attr"] == "MOCK_VALUE"
+
+
+def test_form_options_disable(
+    renderer_context: RendererContext,
+    form: MockForm,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    html = renderer_context.form(form_enabled=False).render(form)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert not tree.xpath("/html/body/form")
+    assert tree.xpath('/html/body/div/input[@name="email"]')
