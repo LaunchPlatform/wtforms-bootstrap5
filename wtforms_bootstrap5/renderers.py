@@ -5,6 +5,7 @@ from markupsafe import Markup
 from wtforms import BooleanField
 from wtforms import Field
 from wtforms import Form
+from wtforms import HiddenField
 from wtforms import SelectField
 from wtforms import SelectMultipleField
 from wtforms import SubmitField
@@ -195,3 +196,14 @@ def render_submit(context: RendererContext, element: FormElement) -> Markup:
         class_name=field_options.row_class,
         attrs=field_options.row_attrs,
     )
+
+
+@register(target_cls=HiddenField)
+def render_hidden(context: RendererContext, element: FormElement) -> Markup:
+    field: HiddenField = element
+
+    field_kwargs: typing.Dict[str, str] = {}
+    field_options: FieldOptions = _field_option(context, name=field.name)
+    field_kwargs.update(field_options.field_attrs)
+    field_html = field.widget(field, **field_kwargs)
+    return field_html

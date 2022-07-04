@@ -4,6 +4,7 @@ import pytest
 from lxml import etree
 from wtforms.fields import BooleanField
 from wtforms.fields import EmailField
+from wtforms.fields import HiddenField
 from wtforms.fields import PasswordField
 from wtforms.fields import SelectField
 from wtforms.fields import SubmitField
@@ -18,6 +19,7 @@ class MockForm(Form):
     city = SelectField("City", choices=["Los Angle", "San Francisco", "New York"])
     agree_terms = BooleanField("I agrees to terms and service")
     submit = SubmitField()
+    csrf_token = HiddenField()
 
 
 @pytest.fixture
@@ -53,6 +55,7 @@ def test_render(
         'input[@name="agree_terms"]'
     )
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/input[@name="submit"]')
+    assert tree.xpath('/html/body/form/input[@name="csrf_token"]')
 
 
 def test_default_field_options(
