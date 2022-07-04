@@ -12,6 +12,22 @@ from .registry import RendererRegistry
 
 
 @dataclasses.dataclass(frozen=True)
+class FormOptions:
+    # Form method to use
+    method: typing.Optional[str] = "POST"
+    # Form action (target URL)
+    action: typing.Optional[str] = None
+    # Form encoding type
+    enctype: typing.Optional[str] = None
+    # class for form
+    form_class: typing.Optional[str] = None
+    # extra attributes for form
+    form_attrs: typing.Dict[str, str] = dataclasses.field(default_factory=dict)
+    # Enable form or not
+    form_enabled: bool = True
+
+
+@dataclasses.dataclass(frozen=True)
 class FieldOptions:
     # class for row div
     row_class: typing.Optional[str] = "mb-3"
@@ -90,23 +106,29 @@ class RendererContext:
     def __init__(
         self,
         registry: RendererRegistry = DEFAULT_REGISTRY,
-        default_field_option: FieldOptions = FieldOptions(),
+        default_form_options: FormOptions = FormOptions(),
+        default_field_options: FieldOptions = FieldOptions(),
     ):
-        self.default_field_option = default_field_option
+        self.form_options = default_form_options
+        self.default_field_options = default_field_options
         self.registry = registry
         self.field_options: typing.Dict[str, FieldOptions] = {}
+
+    def form(self, **kwargs) -> RendererContext:
+        old_options = dataclasses.asdict(self.form_options)
+        self.form_options = FormOptions(old_options | kwargs)
 
     def field(self, *names: str, **kwargs: str) -> RendererContext:
         for name in names:
             old_options = dataclasses.asdict(
-                self.field_options.get(name, self.default_field_option)
+                self.field_options.get(name, self.default_field_options)
             )
             self.field_options[name] = FieldOptions(**(old_options | kwargs))
             return self
 
     def default_field(self, **kwargs: str) -> RendererContext:
-        self.default_field_option = FieldOptions(
-            **(dataclasses.asdict(self.default_field_option) | kwargs)
+        self.default_field_options = FieldOptions(
+            **(dataclasses.asdict(self.default_field_options) | kwargs)
         )
         return self
 

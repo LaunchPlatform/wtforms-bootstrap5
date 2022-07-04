@@ -17,7 +17,7 @@ from .registry import register
 
 
 def _field_option(context: RendererContext, name: str) -> FieldOptions:
-    return context.field_options.get(name, context.default_field_option)
+    return context.field_options.get(name, context.default_field_options)
 
 
 def html_params(**kwargs) -> str:
