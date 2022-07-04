@@ -62,7 +62,7 @@ html = context.render(form)
 The form will be rendered as HTML like
 
 ```html
-<form><div class="mb-3"><label class="form-label" for="email">Email</label><input class="form-control" id="email" name="email" type="email" value=""></div>
+<form method="POST"><div class="mb-3"><label class="form-label" for="email">Email</label><input class="form-control" id="email" name="email" type="email" value=""></div>
 <div class="mb-3"><label class="form-label" for="password">Password</label><input class="form-control" id="password" name="password" type="password" value=""><div class="form-text">Your super secret password</div></div>
 <div class="mb-3"><label class="form-label" for="city">City</label><select class="form-select" id="city" name="city"><option value="Los Angle">Los Angle</option><option value="San Francisco">San Francisco</option><option value="New York">New York</option></select></div>
 <div class="mb-3"><div class="form-check"><label class="form-check-label" for="agree_terms">I agrees to terms and service</label><input class="form-check-input" id="agree_terms" name="agree_terms" type="checkbox" value="y"></div></div>
@@ -89,6 +89,7 @@ Here's an example how you can turn the example above into a column based form.
 ```python
 html = (
     renderer_context
+    .form(action="/sign-up")
     .default_field(
         row_class="row mb-3",
         label_class="form-label col-2",
@@ -137,6 +138,20 @@ html = (context
 ```
 
 The `label_class` for `email` field here will be `form-label` instead of `my-custom-class` since when it's called, the original default value was still `form-label`.
+
+To customize the form element, you can use the `form` method like this
+
+```python
+html = (context
+    .form(
+        method="POST",
+        action="/sign-up",
+        enctype="application/x-www-form-urlencoded",
+        form_class="my-form",
+        form_attrs=dict(custom="value")
+    )
+)
+```
 
 ### Field HTML structure
 
