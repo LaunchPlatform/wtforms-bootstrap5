@@ -1,4 +1,4 @@
-# wtforms-bootstrap5
+# WTForms-Bootstrap5
 Simple library for rendering WTForms in HTML as Bootstrap 5 form controls
 
 **Notice: this project is still in very early stage, the API may change a lots rapidly**
