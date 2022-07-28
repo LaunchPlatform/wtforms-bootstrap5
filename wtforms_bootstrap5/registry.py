@@ -10,7 +10,7 @@ from wtforms import Form
 from .helpers import traverse_base_classes
 
 # Union type of form element
-FormElement = Field | Form
+FormElement = typing.Union[Field, Form]
 # Type for form element renderer
 FormElementRenderer = typing.Callable[["RenderContext", FormElement], Markup]
 
