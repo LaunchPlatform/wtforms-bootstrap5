@@ -8,7 +8,7 @@ Simple library for rendering WTForms in HTML as Bootstrap 5 form controls
 - **MIT licensed** - it doesn't infect your code
 - **Light weight** - not much code and little dependencies
 - **Latest Bootstrap 5** - generates forms in latest Bootstrap 5 style 
-- **High customizable** - you can generate different kind of Bootstrap 5 form controls and layouts
+- **Highly customizable** - you can generate different kind of Bootstrap 5 form controls and layouts
 - **Template engine friendly** - chained method calls making it easy to integrate with template engine
 - **Covered with automatic tests** - yep, we have test cases
 
