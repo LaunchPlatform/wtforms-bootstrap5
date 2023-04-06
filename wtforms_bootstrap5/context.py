@@ -116,7 +116,7 @@ class RendererContext:
 
     def form(self, **kwargs) -> RendererContext:
         old_options = dataclasses.asdict(self.form_options)
-        self.form_options = FormOptions(**(old_options | kwargs))
+        self.form_options = FormOptions(**dict(old_options, **kwargs))
         return self
 
     def field(self, *names: str, **kwargs: str) -> RendererContext:
@@ -124,12 +124,12 @@ class RendererContext:
             old_options = dataclasses.asdict(
                 self.field_options.get(name, self.default_field_options)
             )
-            self.field_options[name] = FieldOptions(**(old_options | kwargs))
+            self.field_options[name] = FieldOptions(**dict(old_options, **kwargs))
         return self
 
     def default_field(self, **kwargs: str) -> RendererContext:
         self.default_field_options = FieldOptions(
-            **(dataclasses.asdict(self.default_field_options) | kwargs)
+            **dict(dataclasses.asdict(self.default_field_options), **kwargs)
         )
         return self
 
