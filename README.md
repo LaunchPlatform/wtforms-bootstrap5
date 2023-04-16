@@ -155,7 +155,7 @@ html = (context
 
 ### Add submit button or other fields
 
-Sometimes, define submit button for each form is not desirable.
+Sometimes, define a submit button for each form is not desirable.
 Or, the form could be automatically generated and doesn't come with a submit button.
 In those cases, you can use `add_field` to add any extra fields into the end of the form.
 Like this:
