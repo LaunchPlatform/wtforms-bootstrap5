@@ -174,11 +174,12 @@ html = (
 
 Since adding a submit button is very common, so you can also use `add_submit` instead if the field to add is a `SubmitField`.
 The default submit field name is `submit`, so you don't need to provide it if you want to make it `submit`.
+Arguments of `SubmitField` can be passed in, such as `label`.
 
 ```python
 html = (
     renderer_context
-    .add_submit()
+    .add_submit(label="Update")
     .field(
         "submit",
         field_wrapper_class="offset-2",
