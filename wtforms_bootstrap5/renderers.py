@@ -141,7 +141,7 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
                 label_kwargs["class"] = field_options.label_class
         label_kwargs.update(field_options.label_attrs)
         label_html = field.label(**label_kwargs)
-        if is_checkbox or field_options.label_first:
+        if not is_checkbox and field_options.label_first:
             content.insert(0, label_html)
         else:
             content.append(label_html)

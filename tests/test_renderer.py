@@ -56,6 +56,10 @@ def test_render(
     )
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/input[@name="submit"]')
     assert tree.xpath('/html/body/form/input[@name="csrf_token"]')
+    assert [
+        element.tag
+        for element in tree.xpath('/html/body/form/div/div[@class="form-check"]/*')
+    ] == ["input", "label"]
 
 
 def test_default_field_options(
