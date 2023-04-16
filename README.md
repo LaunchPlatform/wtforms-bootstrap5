@@ -173,11 +173,12 @@ html = (
 ```
 
 Since adding a submit button is very common, so you can also use `add_submit` instead if the field to add is a `SubmitField`.
+The default submit field name is `submit`, so you don't need to provide it if you want to make it `submit`.
 
 ```python
 html = (
     renderer_context
-    .add_submit("submit")
+    .add_submit()
     .field(
         "submit",
         field_wrapper_class="offset-2",
@@ -187,6 +188,14 @@ html = (
 ```
 
 As you can see in the example, the decorate options also work for the newly added submit field.
+If you want to change the default submit field class, you can pass in `submit_field_cls` argument when creating the context like this.
+
+```python
+html = (
+    RenderContext(submit_field_cls=SubmitButton)
+    .add_submit()
+).render(form)
+```
 
 ### Field HTML structure
 
