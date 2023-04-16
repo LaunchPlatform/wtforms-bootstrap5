@@ -57,6 +57,9 @@ def render_form(context: RendererContext, element: FormElement) -> Markup:
     form: Form = element
     form_options = context.form_options
     fields = [context.render(field) for field in form._fields.values()]
+    for extra_field in context.extra_fields:
+        field = extra_field.field.bind(form=form, name=extra_field.name)
+        fields.append(context.render(field))
     content = "\n".join(fields)
     base_attrs = {}
     if form_options.action is not None:
