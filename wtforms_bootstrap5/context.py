@@ -114,6 +114,7 @@ class RendererContext:
     def __init__(
         self,
         registry: RendererRegistry = DEFAULT_REGISTRY,
+        submit_field_cls: typing.Type = SubmitField,
         default_form_options: FormOptions = FormOptions(),
         default_field_options: FieldOptions = FieldOptions(),
     ):
@@ -121,6 +122,7 @@ class RendererContext:
         self.default_field_options = default_field_options
         self.registry = registry
         self.field_options: typing.Dict[str, FieldOptions] = {}
+        self.submit_field_cls = submit_field_cls
         self.extra_fields: typing.List[UnboundField] = []
 
     def form(self, **kwargs) -> RendererContext:
@@ -147,7 +149,7 @@ class RendererContext:
         return self
 
     def add_submit(self, name="submit", **kwargs) -> RendererContext:
-        return self.add_field(name, SubmitField(**kwargs))
+        return self.add_field(name, self.submit_field_cls(**kwargs))
 
     def render(self, element: FormElement) -> Markup:
         base_class_paths: typing.List[typing.Tuple] = traverse_base_classes(
