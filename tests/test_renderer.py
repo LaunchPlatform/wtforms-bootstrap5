@@ -155,3 +155,40 @@ def test_form_options_disable(
     # Notice: lxml parser will add html and body automatically in the tree
     assert not tree.xpath("/html/body/form")
     assert tree.xpath('/html/body/div/input[@name="email"]')
+
+
+def test_add_field(
+    renderer_context: RendererContext,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    form = Form()
+    html = renderer_context.add_field(name="submit", field=SubmitField()).render(form)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert tree.xpath('/html/body/form/div/input[@name="submit"]')
+
+
+def test_add_submit(
+    renderer_context: RendererContext,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    form = Form()
+    html = renderer_context.add_submit(name="submit").render(form)
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert tree.xpath('/html/body/form/div/input[@name="submit"]')
+
+
+def test_add_field_with_options(
+    renderer_context: RendererContext,
+    parse_html: typing.Callable[[str], etree._ElementTree],
+):
+    form = Form()
+    html = (
+        renderer_context.add_field(name="submit", field=SubmitField())
+        .field("submit", row_class="mb-5")
+        .render(form)
+    )
+    tree = parse_html(html)
+    # Notice: lxml parser will add html and body automatically in the tree
+    assert tree.xpath('/html/body/form/div[@class="mb-5"]/input[@name="submit"]')

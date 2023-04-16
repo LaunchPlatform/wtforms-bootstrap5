@@ -4,6 +4,8 @@ import dataclasses
 import typing
 
 from markupsafe import Markup
+from wtforms import SubmitField
+from wtforms.fields.core import UnboundField
 
 from .helpers import traverse_base_classes
 from .registry import DEFAULT_REGISTRY
@@ -102,6 +104,12 @@ class FieldOptions:
     help_enabled: bool = True
 
 
+@dataclasses.dataclass(frozen=True)
+class ExtraField:
+    name: str
+    field: UnboundField
+
+
 class RendererContext:
     def __init__(
         self,
@@ -113,6 +121,7 @@ class RendererContext:
         self.default_field_options = default_field_options
         self.registry = registry
         self.field_options: typing.Dict[str, FieldOptions] = {}
+        self.extra_fields: typing.List[UnboundField] = []
 
     def form(self, **kwargs) -> RendererContext:
         old_options = dataclasses.asdict(self.form_options)
@@ -132,6 +141,13 @@ class RendererContext:
             **(dataclasses.asdict(self.default_field_options) | kwargs)
         )
         return self
+
+    def add_field(self, name: str, field: UnboundField) -> RendererContext:
+        self.extra_fields.append(ExtraField(name=name, field=field))
+        return self
+
+    def add_submit(self, name="submit", **kwargs) -> RendererContext:
+        return self.add_field(name, SubmitField(**kwargs))
 
     def render(self, element: FormElement) -> Markup:
         base_class_paths: typing.List[typing.Tuple] = traverse_base_classes(

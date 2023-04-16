@@ -153,6 +153,41 @@ html = (context
 )
 ```
 
+### Add submit button or other fields
+
+Sometimes, define a submit button for each form is not desirable.
+Or, the form could be automatically generated and doesn't come with a submit button.
+In those cases, you can use `add_field` to add any extra fields into the end of the form.
+Like this:
+
+```python
+html = (
+    renderer_context
+    .add_field("submit", SubmitField())
+    .field(
+        "submit",
+        field_wrapper_class="offset-2",
+        field_wrapper_enabled=True,
+    )
+).render(form)
+```
+
+Since adding a submit button is very common, so you can also use `add_submit` instead if the field to add is a `SubmitField`.
+
+```python
+html = (
+    renderer_context
+    .add_submit("submit")
+    .field(
+        "submit",
+        field_wrapper_class="offset-2",
+        field_wrapper_enabled=True,
+    )
+).render(form)
+```
+
+As you can see in the example, the decorate options also work for the newly added submit field.
+
 ### Field HTML structure
 
 In general, the field HTML structure can be controlled by the option values and it looks like this
