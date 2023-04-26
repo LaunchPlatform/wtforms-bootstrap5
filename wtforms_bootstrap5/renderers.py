@@ -72,7 +72,7 @@ def render_form(context: RendererContext, element: FormElement) -> Markup:
         content,
         enabled=form_options.form_enabled,
         class_name=form_options.form_class,
-        attrs=base_attrs | form_options.form_attrs,
+        attrs=dict(base_attrs, **form_options.form_attrs),
         tag="form",
     )
 
