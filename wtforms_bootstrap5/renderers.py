@@ -99,7 +99,7 @@ def render_field(context: RendererContext, element: FormElement) -> Markup:
         field_kwargs["class"] = " ".join(field_classes)
     field_kwargs.update(field_options.field_attrs)
 
-    field_content = [field.widget(field, **field_kwargs)]
+    field_content = [field(**field_kwargs)]
     if field.description:
         help_message = escape(field.description)
         field_content.append(
