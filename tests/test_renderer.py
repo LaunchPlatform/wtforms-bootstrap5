@@ -48,6 +48,9 @@ def test_render(
     # Notice: lxml parser will add html and body automatically in the tree
     assert tree.xpath("/html/body/form")
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/input[@name="email"]')
+    assert tree.xpath(
+        '/html/body/form/div[@class="mb-3"]/input[@name="email"]/@placeholder'
+    ) == ["Foobar"]
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/input[@name="password"]')
     assert tree.xpath('/html/body/form/div[@class="mb-3"]/select[@name="city"]')
     assert tree.xpath(
